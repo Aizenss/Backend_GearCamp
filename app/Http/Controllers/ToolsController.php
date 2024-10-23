@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tools;
-use App\Http\Requests\StoreToolsRequest;
-use App\Http\Requests\UpdateToolsRequest;
+use Illuminate\Http\Request;
+
+use function Pest\Laravel\json;
 
 class ToolsController extends Controller
 {
@@ -13,7 +14,12 @@ class ToolsController extends Controller
      */
     public function index()
     {
-        //
+        $data = Tools::all();
+        return response()->json([
+            'status' => 200,
+            'message' => 'success',
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -27,7 +33,7 @@ class ToolsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreToolsRequest $request)
+    public function store(Request $request)
     {
         //
     }
@@ -51,7 +57,7 @@ class ToolsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateToolsRequest $request, Tools $tools)
+    public function update(Request $request, Tools $tools)
     {
         //
     }

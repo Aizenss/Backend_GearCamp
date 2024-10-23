@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tools', function (Blueprint $table) {
             $table->id();
-            $table->string('nameTool');
-            $table->text('descriptionTool');
-            $table->integer('stockTool');
-            $table->integer('priceDayTool');
-            $table->string('imageTool');
+            $table->string('name_tool');
+            $table->text('description_tool');
+            $table->integer('stock_tool');
+            $table->integer('price_day_tool');
+            $table->string('image_tool')->nullable();
             $table->timestamps();
         });
     }

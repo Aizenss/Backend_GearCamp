@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('tool_id')->constrained('tools');
+            $table->unsignedBigInteger('user_id')->index();
+            $table->unsignedBigInteger('tool_id')->index();
             $table->date('rental_date');
             $table->date('return_date')->nullable();
-            $table->enum('status', ['pending', 'approved', 'returned', 'cancelled'])->default('pending');
-            $table->integer('priceRental');
+            $table->enum('status', ['menunggu pembayaran', 'dipinjam', 'dikembalikan', 'melebihi batas waktu'])->default('menunggu pembayaran');
+            $table->integer('price_rental');
             $table->timestamps();
         });
     }

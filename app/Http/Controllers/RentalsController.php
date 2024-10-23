@@ -3,64 +3,50 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rentals;
-use App\Http\Requests\StoreRentalsRequest;
-use App\Http\Requests\UpdateRentalsRequest;
+use Illuminate\Http\Request;
+use App\Models\Tools;
 
 class RentalsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $rentals = Rentals::with('tools')->get();
+        return response()->json($rentals);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function store(Request $request)
     {
-        //
-    }
+        // Buat rental baru tanpa validasi
+        $rental = Rentals::create([
+            'rental_date' => $request->rental_date,
+            'return_date' => $request->return_date,
+            'status' => 'menunggu pembayaran',
+            'price_rental' => 0, // Kalkulasi harga nanti
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreRentalsRequest $request)
-    {
-        //
-    }
+        $totalPrice = 0;
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Rentals $rentals)
-    {
-        //
-    }
+        // Iterasi tools yang dipilih oleh user
+        if ($request->has('tools')) {
+            foreach ($request->tools as $tool) {
+                // Ambil data tool dari database
+                $toolData = Tools::find($tool['id']);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Rentals $rentals)
-    {
-        //
-    }
+                if ($toolData) {
+                    // Tambahkan barang ke peminjaman dengan jumlah yang dipilih
+                    $rental->tools()->attach($toolData, ['quantity' => $tool['quantity']]);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateRentalsRequest $request, Rentals $rentals)
-    {
-        //
-    }
+                    // Kalkulasi total harga barang yang dipinjam
+                    $totalPrice += $toolData->price_day_tool * $tool['quantity'];
+                }
+            }
+        }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Rentals $rentals)
-    {
-        //
+        // Update harga total di tabel rentals
+        $rental->update(['price_rental' => $totalPrice]);
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Peminjaman berhasil ditambahkan',
+        ]);
     }
 }

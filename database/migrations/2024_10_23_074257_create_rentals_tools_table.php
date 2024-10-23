@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('rentals', function (Blueprint $table) {
+        Schema::create('rentals_tools', function (Blueprint $table) {
             $table->id();
-            $table->date('rental_date');
-            $table->date('return_date')->nullable();
-            $table->enum('status', ['menunggu pembayaran', 'dipinjam', 'dikembalikan', 'melebihi batas waktu'])->default('menunggu pembayaran');
-            $table->integer('price_rental');
+            $table->unsignedBigInteger('rentals_id')->index();
+            $table->unsignedBigInteger('tools_id')->index();
+            $table->integer('quantity');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('rentals');
+        Schema::dropIfExists('rentals_tools');
     }
 };
